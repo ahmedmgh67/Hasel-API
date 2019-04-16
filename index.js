@@ -47,7 +47,7 @@ var TransictionSchema = new Schema({
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
 listTransictions = function(req, res){
-  Transiction.find({user: req.params.user}, function(err, transictions) {
+  Transiction.find({user: req.params.userId}, function(err, transictions) {
     if (err)
       res.send(err);
     res.json(transictions);
@@ -78,8 +78,10 @@ deleteTransiction = function(req, res) {
   });
 };
 // handling the routes
-app.route('/api/transictions/:user')
-  .get(listTransictions);
+/*app.route('/api/transictions/:user')
+  .get(listTransictions);*/
+app.route('/api/transictions/:userId')
+  .get(listTransictions)
 app.route('/api/transictions')
   .post(createTransiction);
 app.route('/api/transitions/:transiction')
