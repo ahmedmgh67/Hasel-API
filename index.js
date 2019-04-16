@@ -78,7 +78,7 @@ deleteTransiction = function(req, res) {
   });
 };
 // handling the routes
-app.route('/api/transitions/:user')
+app.route('/api/transictions/:user')
   .get(listTransictions);
 app.route('/api/transictions')
   .post(createTransiction);
