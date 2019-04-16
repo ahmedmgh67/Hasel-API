@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 mongoose.Promise = global.Promise;
 mongoose
   .connect(
-    'mongodb://mongo:27017/hasel',
+    'mongodb://mongo:27017/hasel-api',
     { useNewUrlParser: true }
   )
   .then(() => console.log('MongoDB Connected'))
