@@ -1,6 +1,6 @@
 //hospital management
 var mongoose = require('mongoose');
-var express = require('express'),app = express(), port = 5000;
+var express = require('express'), app = express(), port = 5000;
 var bodyParser = require('body-parser');
 var Schema = mongoose.Schema;
 //middleware 
@@ -23,55 +23,55 @@ app.listen(
 );
 //schema
 var TransictionSchema = new Schema({
-  user:{
+  user: {
     type: String,
     required: true
   },
-  desc:{
+  desc: {
     type: String,
     required: false
   },
-  amount:{
+  amount: {
     type: String,
     required: true
   },
-  payer:{
+  payer: {
     type: String,
     required: true
   },
-  status:{
+  status: {
     type: String,
     default: "Waiting to Open"
   },
 })
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
-listTransictions = function(req, res){
-  Transiction.find({user: req.params.userId}, function(err, transictions) {
+listTransictions = function (req, res) {
+  Transiction.find({ user: req.params.userId }, function (err, transictions) {
     if (err)
       res.send(err);
     res.json(transictions);
   });
 }
-createTransiction= function(req, res) {
+createTransiction = function (req, res) {
   var newTransiction = new Transiction(req.body);
-  newTransiction.save(function(err, transiction) {
+  newTransiction.save(function (err, transiction) {
     if (err)
       res.send(err);
     res.json(transiction);
   });
 };
-updateTransiction = function(req, res) {
-  Transiction.findOneAndUpdate({_id: req.params.transiction}, req.body, {new: true}, function(err, transiction) {
+updateTransiction = function (req, res) {
+  Transiction.findOneAndUpdate({ _id: req.params.transiction }, req.body, { new: true }, function (err, transiction) {
     if (err)
       res.send(err);
     res.json(transiction);
   });
 };
-deleteTransiction = function(req, res) {
+deleteTransiction = function (req, res) {
   Post.remove({
     _id: req.params.transiction
-  }, function(err, task) {
+  }, function (err, task) {
     if (err)
       res.send(err);
     res.json({ message: 'Transiction successfully deleted' });
@@ -85,5 +85,5 @@ app.route('/api/transictions/:userId')
 app.route('/api/transictions')
   .post(createTransiction);
 app.route('/api/transitions/:transiction')
-.put(updateTransiction)
-.delete(deleteTransiction);
+  .put(updateTransiction)
+  .delete(deleteTransiction);
