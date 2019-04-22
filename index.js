@@ -80,10 +80,14 @@ deleteTransiction = function (req, res) {
 // handling the routes
 /*app.route('/api/transictions/:user')
   .get(listTransictions);*/
-app.route('/api/transictions/:userId')
+app.get('/api/transictions/:userId', listTransictions);
+app.post('/api/transictions', createTransiction);
+app.put('/api/transictions/:transiction', updateTransiction);
+app.delete('/api/transictions/transiction', deleteTransiction)
+/*app.route('/api/transictions/:userId')
   .get(listTransictions)
 app.route('/api/transictions')
   .post(createTransiction);
 app.route('/api/transitions/:transiction')
   .put(updateTransiction)
-  .delete(deleteTransiction);
+  .delete(deleteTransiction);*/
