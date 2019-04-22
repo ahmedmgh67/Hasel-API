@@ -46,14 +46,14 @@ var TransictionSchema = new Schema({
 })
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
-listTransictions = function (req, res) {
+function listTransictions (req, res) {
   Transiction.find({ user: req.params.userId }, function (err, transictions) {
     if (err)
       res.send(err);
     res.json(transictions);
   });
 }
-createTransiction = function (req, res) {
+function createTransiction (req, res) {
   var newTransiction = new Transiction(req.body);
   newTransiction.save(function (err, transiction) {
     if (err)
@@ -61,14 +61,14 @@ createTransiction = function (req, res) {
     res.json(transiction);
   });
 };
-updateTransiction = function (req, res) {
+function updateTransiction (req, res) {
   Transiction.findOneAndUpdate({ _id: req.params.transiction }, req.body, { new: true }, function (err, transiction) {
     if (err)
       res.send(err);
     res.json(transiction);
   });
 };
-deleteTransiction = function (req, res) {
+function deleteTransiction (req, res) {
   Post.remove({
     _id: req.params.transiction
   }, function (err, task) {
@@ -80,10 +80,10 @@ deleteTransiction = function (req, res) {
 // handling the routes
 /*app.route('/api/transictions/:user')
   .get(listTransictions);*/
-app.get('/api/transictions/', listTransictions);
-app.post('/api/transictions', createTransiction);
-app.put('/api/transictions/:transiction', updateTransiction);
-app.delete('/api/transictions/transiction', deleteTransiction)
+app.get('/api/transictions/', listTransictions(req, res));
+app.post('/api/transictions', createTransiction(req, res));
+app.put('/api/transictions/:transiction', updateTransiction(req, res));
+app.delete('/api/transictions/transiction', deleteTransiction(req, res));
 /*app.route('/api/transictions/:userId')
   .get(listTransictions)
 app.route('/api/transictions')
