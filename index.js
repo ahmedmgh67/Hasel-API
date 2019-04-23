@@ -48,7 +48,7 @@ var TransictionSchema = new Schema({
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
 listTransictions = function(req, res){
-  Transiction.find({user: req.params.user}, function(err, transictions) {
+  Transiction.find({user: req.params.userId}, function(err, transictions) {
     if (err)
       res.send(err);
     res.json(transictions);
