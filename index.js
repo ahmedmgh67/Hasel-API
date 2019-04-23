@@ -1,9 +1,9 @@
 //hospital management
 var mongoose = require('mongoose');
-var express = require('express'), app = express(), port = 5000;
+var express = require('express'),app = express(), port = 5000;
 var bodyParser = require('body-parser');
 var Schema = mongoose.Schema;
-//middleware 
+//middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // Connect to MongoDB
@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 // TODO:Change for container 
 mongoose
   .connect(
-    'mongodb://mongo:27017/hasel-api',
+    'mongodb://mongo:27017/hasel',
     { useNewUrlParser: true }
   )
   .then(() => console.log('MongoDB Connected'))
@@ -24,61 +24,80 @@ app.listen(
 );
 //schema
 var TransictionSchema = new Schema({
-  user: {
+  user:{
     type: String,
     required: true
   },
-  desc: {
+  desc:{
     type: String,
     required: false
   },
-  amount: {
+  amount:{
     type: String,
     required: true
   },
-  payer: {
+  payer:{
     type: String,
     required: true
   },
-  status: {
+  status:{
     type: String,
     default: "Waiting to Open"
   },
 })
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
+<<<<<<< HEAD
 listTransictions = function (req, res) {
   Transiction.find({ user: req.params.userId }, function (err, transictions) {
+=======
+listTransictions = function(req, res){
+  Transiction.find({user: req.params.user}, function(err, transictions) {
+>>>>>>> ccac7e36cd21874fbc7a3925390a60cb6baf72bf
     if (err)
       res.send(err);
     res.json(transictions);
   });
 }
+<<<<<<< HEAD
 createTransiction = function (req, res) {
+=======
+createTransiction= function(req, res) {
+>>>>>>> ccac7e36cd21874fbc7a3925390a60cb6baf72bf
   var newTransiction = new Transiction(req.body);
-  newTransiction.save(function (err, transiction) {
+  newTransiction.save(function(err, transiction) {
     if (err)
       res.send(err);
     res.json(transiction);
   });
 };
+<<<<<<< HEAD
 updateTransiction = function (req, res) {
   Transiction.findOneAndUpdate({ _id: req.params.transiction }, req.body, { new: true }, function (err, transiction) {
+=======
+updateTransiction = function(req, res) {
+  Transiction.findOneAndUpdate({_id: req.params.transiction}, req.body, {new: true}, function(err, transiction) {
+>>>>>>> ccac7e36cd21874fbc7a3925390a60cb6baf72bf
     if (err)
       res.send(err);
     res.json(transiction);
   });
 };
+<<<<<<< HEAD
 deleteTransiction = function (req, res) {
+=======
+deleteTransiction = function(req, res) {
+>>>>>>> ccac7e36cd21874fbc7a3925390a60cb6baf72bf
   Post.remove({
     _id: req.params.transiction
-  }, function (err, task) {
+  }, function(err, task) {
     if (err)
       res.send(err);
     res.json({ message: 'Transiction successfully deleted' });
   });
 };
 // handling the routes
+<<<<<<< HEAD
 /*app.route('/api/transictions/:user')
   .get(listTransictions);*/
 app.route('/api/transictions/:userId')
@@ -88,3 +107,12 @@ app.route('/api/transictions')
 app.route('/api/transitions/:transiction')
   .put(updateTransiction)
   .delete(deleteTransiction);
+=======
+app.route('/api/transitions/:user')
+  .get(listTransictions);
+app.route('/api/transictions')
+  .post(createTransiction);
+app.route('/api/transitions/:transiction')
+.put(updateTransiction)
+.delete(deleteTransiction);
+>>>>>>> ccac7e36cd21874fbc7a3925390a60cb6baf72bf
