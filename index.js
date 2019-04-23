@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // Connect to MongoDB
 mongoose.Promise = global.Promise;
+// TODO:Change for container 
 mongoose
   .connect(
     'mongodb://mongo:27017/hasel-api',
@@ -46,14 +47,14 @@ var TransictionSchema = new Schema({
 })
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
-function listTransictions (req, res) {
+listTransictions = function (req, res) {
   Transiction.find({ user: req.params.userId }, function (err, transictions) {
     if (err)
       res.send(err);
     res.json(transictions);
   });
 }
-function createTransiction (req, res) {
+createTransiction = function (req, res) {
   var newTransiction = new Transiction(req.body);
   newTransiction.save(function (err, transiction) {
     if (err)
@@ -61,14 +62,14 @@ function createTransiction (req, res) {
     res.json(transiction);
   });
 };
-function updateTransiction (req, res) {
+updateTransiction = function (req, res) {
   Transiction.findOneAndUpdate({ _id: req.params.transiction }, req.body, { new: true }, function (err, transiction) {
     if (err)
       res.send(err);
     res.json(transiction);
   });
 };
-function deleteTransiction (req, res) {
+deleteTransiction = function (req, res) {
   Post.remove({
     _id: req.params.transiction
   }, function (err, task) {
@@ -80,14 +81,10 @@ function deleteTransiction (req, res) {
 // handling the routes
 /*app.route('/api/transictions/:user')
   .get(listTransictions);*/
-app.get('/api/transictions/', listTransictions(req, res));
-app.post('/api/transictions', createTransiction(req, res));
-app.put('/api/transictions/:transiction', updateTransiction(req, res));
-app.delete('/api/transictions/transiction', deleteTransiction(req, res));
-/*app.route('/api/transictions/:userId')
+app.route('/api/transictions/:userId')
   .get(listTransictions)
 app.route('/api/transictions')
   .post(createTransiction);
 app.route('/api/transitions/:transiction')
   .put(updateTransiction)
-  .delete(deleteTransiction);*/
+  .delete(deleteTransiction);
