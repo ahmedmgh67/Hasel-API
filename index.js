@@ -52,6 +52,13 @@ listTransictions = function(req, res){
     res.json(transictions);
   });
 }
+searchTransictions = function(req, res){
+  Transiction.findOne({_id: req.params.id}, function(err, transictions) {
+    if (err)
+      res.send(err);
+    res.json(transictions);
+  });
+}
 listAllTransictions = function(req, res){
   Transiction.find({}, function(err, transictions) {
     if (err)
@@ -90,6 +97,8 @@ app.route('/api/transictions/:userId')
   .get(listTransictions)
 app.route('/api/alltransictions')
   .get(listAllTransictions)
+app.route('/api/searchtransictions/:id')
+  .get(searchTransictions)
 app.route('/api/transictions')
   .post(createTransiction);
 app.route('/api/transitions/:transiction')
