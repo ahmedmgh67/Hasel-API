@@ -105,7 +105,7 @@ app.route('/api/searchtransictions/:id')
   .get(searchTransictions)
 app.route('/api/transictions')
   .post(createTransiction);
-app.route('/api/transitions/:id')
+app.route('/api/transictions/:id')
   .put(updateTransiction)
   .delete(deleteTransiction);
 
@@ -181,7 +181,7 @@ var PaymentSchema = new Schema({
     required: true
   },
   withdraw:{
-    type: String, 
+    type: Boolean, 
     default: false,
   },
   status:{
@@ -219,7 +219,7 @@ deletePayment = function(req, res) {
   });
 };
 
-app.route("/api/payment")
+app.route("/api/payments")
   .post(newPayment);
 app.route("/api/payments/:id")
   .delete(deletePayment);
