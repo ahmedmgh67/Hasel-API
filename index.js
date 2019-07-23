@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 mongoose.Promise = global.Promise;
 mongoose
   .connect(
-    'mongodb+srv://admin:admin@cluster0-driyq.mongodb.net/test?retryWrites=true&w=majority',
+    'mongodb+srv://admin:admin@cluster0-driyq.mongodb.net/plata?retryWrites=true&w=majority',
     { useNewUrlParser: true }
   )
   .then(() => console.log('MongoDB Connected'))
