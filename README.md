@@ -1,2 +1,2 @@
-# Hasel-API
-An API for Hasel built by Node.js &amp; Lopback
+# Plata-API
+An API for Plata built by Node.js &amp; Lopback

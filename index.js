@@ -21,7 +21,7 @@ mongoose
 //starting the app
 app.listen(
   port, () => console.log(
-    'Hasel RESTful API server started on: ' + port
+    'Plata RESTful API server started on: ' + port
   )
 );
 //schema
@@ -50,6 +50,7 @@ var TransictionSchema = new Schema({
 mongoose.model("transictions", TransictionSchema);
 var Transiction = mongoose.model("transictions");
 listTransictions = function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
   Transiction.find({user: req.params.userId}, function(err, transictions) {
     if (err)
       res.send(err);
@@ -57,6 +58,7 @@ listTransictions = function(req, res){
   });
 }
 searchTransictions = function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
   Transiction.findOne({_id: req.params.id}, function(err, transictions) {
     if (err)
       res.send(err);
@@ -64,6 +66,7 @@ searchTransictions = function(req, res){
   });
 }
 listAllTransictions = function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
   Transiction.find({}, function(err, transictions) {
     if (err)
       res.send(err);
@@ -71,6 +74,7 @@ listAllTransictions = function(req, res){
   });
 }
 createTransiction= function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   var newTransiction = new Transiction(req.body);
   newTransiction.save(function(err, transiction) {
     if (err)
@@ -80,6 +84,7 @@ createTransiction= function(req, res) {
 };
 
 updateTransiction = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   Transiction.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, transiction) {
     if (err)
       res.send(err);
@@ -88,6 +93,7 @@ updateTransiction = function(req, res) {
 };
 
 deleteTransiction = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   Post.remove({
     _id: req.params.id
   }, function(err, task) {
@@ -136,6 +142,7 @@ UserSchema.plugin(uniqueValidator);
 mongoose.model("users", UserSchema);
 var User = mongoose.model("users");
 login = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   User.find({email: req.body.email, password: req.body.password}, function(err, requests) {
     if (err)
       res.send(err);
@@ -143,6 +150,7 @@ login = function(req, res) {
   });
 };
 register = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   var newUser = new User(req.body);
   newUser.save(function(err, request) {
     if (err)
@@ -193,6 +201,7 @@ mongoose.model("payments", PaymentSchema);
 var Payment = mongoose.model("payments");
 
 newPayment = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   var newPayment = new Payment(req.body);
   newPayment.save(function(err, payment) {
     if (err)
@@ -202,6 +211,7 @@ newPayment = function(req, res) {
 };
 
 listAllPayments = function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
   Payment.find({}, function(err, payments) {
     if (err)
       res.send(err);
@@ -210,6 +220,7 @@ listAllPayments = function(req, res){
 }
 
 deletePayment = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
   Payment.remove({
     _id: req.params.id
   }, function(err, payment) {
