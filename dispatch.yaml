@@ -1,0 +1,5 @@
+dispatch:
+  - url: "plata-eg.ml/*"
+    service: default
+  - url: "easybooking.tk/*"
+    service: easybook-api

@@ -4,6 +4,7 @@ var express = require('express'),app = express(), port = process.env.PORT || 500
 var bodyParser = require('body-parser');
 var uniqueValidator = require('mongoose-unique-validator');
 var axios = require('axios');
+var path = require('path');
 
 var Schema = mongoose.Schema;
 //middleware
@@ -65,7 +66,7 @@ searchTransictions = function(req, res){
     res.json(transictions);
   });
 }
-listAllTransictions = function(req, res){
+listAllTransictions = function(_req, res){
   res.header("Access-Control-Allow-Origin", "*");
   Transiction.find({}, function(err, transictions) {
     if (err)
@@ -96,7 +97,7 @@ deleteTransiction = function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   Post.remove({
     _id: req.params.id
-  }, function(err, task) {
+  }, function(err, _task) {
     if (err)
       res.send(err);
     res.json({ message: 'Transiction successfully deleted' });
@@ -133,10 +134,22 @@ var UserSchema = new Schema({
     type: String,
     required: true
   },
-  address:{
-    type: [{type: String}],
-    required: false
+  balance:{
+    type: String,
+    default: "0"
   },
+  business:{
+    type: Boolean,
+    default: false
+  },
+  // address:{
+  //   type: [{type: String}],
+  //   required: false
+  // },
+  phone: {
+    type: String,
+    required: true
+  }
 });
 UserSchema.plugin(uniqueValidator);
 mongoose.model("users", UserSchema);
@@ -144,6 +157,31 @@ var User = mongoose.model("users");
 login = function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   User.findOne({email: req.body.email, password: req.body.password}, function(err, requests) {
+    if (err)
+      res.send(err);
+    res.json(requests);
+  });
+};
+balance = function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
+  //console.log(req.body.balance);
+  User.findByIdAndUpdate({_id: req.params.id}, {balance: req.params.balance}, function(err, raw){
+    if (err)
+      res.send(err);
+    res.json(raw);
+  });
+};
+account = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  User.findOne({email: req.params.email}, function(err, requests) {
+    if (err)
+      res.send(err);
+    res.json(requests);
+  });
+};
+accounts = function(_req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  User.find({}, function(err, requests) {
     if (err)
       res.send(err);
     res.json(requests);
@@ -158,10 +196,16 @@ register = function(req, res) {
     res.json(request);
   });
 };
+app.route("/api/account/:email")
+  .get(account)
+app.route("/api/accounts/")
+.get(accounts)
 app.route("/api/login")
   .post(login)
 app.route("/api/register")
   .post(register)
+app.route("/api/balance/:id/:balance")
+  .get(balance)
 
 var PaymentSchema = new Schema({
   transiction:{
@@ -210,7 +254,7 @@ newPayment = function(req, res) {
   });
 };
 
-listAllPayments = function(req, res){
+listAllPayments = function(_req, res){
   res.header("Access-Control-Allow-Origin", "*");
   Payment.find({}, function(err, payments) {
     if (err)
@@ -223,7 +267,7 @@ deletePayment = function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   Payment.remove({
     _id: req.params.id
-  }, function(err, payment) {
+  }, function(err, _payment) {
     if (err)
       res.send(err);
     res.json({ message: 'Payment successfully deleted' });
@@ -233,6 +277,91 @@ deletePayment = function(req, res) {
 app.route("/api/payments")
   .post(newPayment);
 app.route("/api/payments/:id")
-  .delete(deletePayment);
+  .delete(deletePayment); 
 app.route("/api/allpayments")
   .get(listAllPayments);
+
+  app.route("/")
+    .get(function(_req, res){
+      res.sendFile(path.join(__dirname , "index/index.html"));   
+    });
+app.use(express.static("pay"));
+mongoose.set('useFindAndModify', false);
+
+close = function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
+  Payment.findById(req.params.id, function(err,re){
+    if(err){
+      res.send(err);
+    }
+    if(!re){
+      res.json({"error":"unavailablePayment"})
+      return;
+    }
+    if(re.transiction.indexOf("deposit")!=-1){
+      var a = re.transiction.slice(8);
+      User.findOne({email:a}, function(err,user){
+        if(err){
+          res.send(err);
+        }
+        var c = parseInt(user.balance) + parseInt(re.amount);
+        User.findOneAndUpdate({email: a}, {balance: c.toString()}, function(_err,_doc,resa){
+          res.json(resa);
+        });
+      });
+    }
+    if(re.transiction.indexOf("withdraw")!=-1){
+      var b = re.transiction.slice(9);
+      User.findOne({email:b}, function(err,user){
+        if(err){
+          res.send(err);
+        }
+        var d = parseInt(user.balance) - parseInt(re.amount);
+        User.findOneAndUpdate({email: b}, {balance: d.toString()}, function(_err,_doc,resad){
+          res.json(resad);
+        });
+      });
+    } else {
+      User.findOne({email:re.user}, function(err,user){
+        if(err){
+          res.send(err);
+        }
+        
+        console.log(user);
+        var c = (parseInt(user.balance) + parseInt(re.amount)) * 0.97;
+        User.findOneAndUpdate({email: a}, {balance: c.toString()}, function(err,_doc,resa){
+          if(err){
+            res.send(err);
+          }
+          res.json(resa);
+        });
+      });
+    }
+    
+  });
+  Payment.deleteOne({_id: req.params.id}, function(err, _resd){
+    if (err)
+      res.send(err)
+  });
+}
+
+app.route("/api/close/:id")
+  .get(close)
+
+
+qrcode = function (req, res){
+  User.findOne({email:req.params.charged}, function(_err, dbresc){
+    if(Number.parseInt(req.params.amount) > Number.parseInt(dbresc.balance)){
+      res.json({"message":"amount is less than balance"});
+    } else {
+      User.findOneAndUpdate({email:req.params.charged}, {balance: (Number.parseInt(dbresc.balance) - Number.parseInt(req.params.amount)).toString()}, function(_err, _resa){})
+      User.findOne({email: req.params.email}, function(_err, emaildbres){
+        User.findOneAndUpdate({email:req.params.email}, {balance: (Number.parseInt(emaildbres.balance) + Number.parseInt(req.params.amount)).toString()}, function(_err, _resab){})
+      })
+      res.json({"message":"operation complete"})
+    }
+  });
+}
+
+app.route("/api/qrcode/:email/:charged/:amount")
+  .get(qrcode)
